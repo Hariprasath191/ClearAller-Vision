@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum AllergyCategory {
+  dairy
+  peanuts
+  gluten
+  soy
+  eggs
+  shellfish
+  tree_nuts
+  sesame
+  fragrance
+  preservatives
+  colorants
+  sulfates
+  parabens
+}
+
+enum SeverityLevel {
+  low
+  medium
+  high
+  critical
+}
+
+model User {
+  id              String            @id @default(cuid())
+  email           String            @unique
+  displayName     String
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  profiles        AllergyProfile[]
+  analysisHistory AnalysisHistory[]
+}
+
+model AllergyProfile {
+  id                String              @id @default(cuid())
+  userId            String
+  name              String
+  age               Int
+  medicalConditions Json?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  allergySettings   ProfileAllergy[]
+  analysisResults   AnalysisProfileHit[]
+}
+
+model ProfileAllergy {
+  id        String          @id @default(cuid())
+  profileId String
+  category  AllergyCategory
+  severity  SeverityLevel
+  profile   AllergyProfile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, category])
+}
+
+model IngredientKnowledge {
+  id               String    @id @default(cuid())
+  canonicalName    String    @unique
+  normalizedName   String    @unique
+  synonyms         String[]
+  derivatives      String[]
+  categories       AllergyCategory[]
+  sourceList       String[]
+  scientificName   String?
+  description      String?
+  lastVerifiedAt   DateTime?
+  discoveredAt     DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+model AnalysisHistory {
+  id                String               @id @default(cuid())
+  userId            String
+  sourceImageName   String?
+  productQuery      String?
+  rawExtractedText  String
+  normalizedText    String
+  createdAt         DateTime             @default(now())
+  user              User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  profileHits       AnalysisProfileHit[]
+}
+
+model AnalysisProfileHit {
+  id             String          @id @default(cuid())
+  analysisId     String
+  profileId      String
+  rating         String
+  confidence     Float
+  matchedRisk    Json
+  safeIngredients Json
+  notes          Json
+  analysis       AnalysisHistory @relation(fields: [analysisId], references: [id], onDelete: Cascade)
+  profile        AllergyProfile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+}

@@ -1,0 +1,21 @@
+{
+  "dataset": "C:\\Users\\HP\\Downloads\\Project\\ml\\data\\training_dataset.jsonl",
+  "rows": 1568,
+  "categories": [
+    "dairy",
+    "peanuts",
+    "gluten",
+    "soy",
+    "eggs",
+    "shellfish",
+    "tree-nuts",
+    "sesame",
+    "fragrance",
+    "preservatives",
+    "colorants",
+    "sulfates",
+    "parabens"
+  ],
+  "vocabulary_size": 5224,
+  "trained_model": "C:\\Users\\HP\\Downloads\\Project\\ml\\artifacts\\allergen_model.json"
+}

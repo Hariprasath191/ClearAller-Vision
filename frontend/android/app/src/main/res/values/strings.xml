@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">ClearAller</string>
+    <string name="title_activity_main">ClearAller</string>
+    <string name="package_name">com.clearaller.app</string>
+    <string name="custom_url_scheme">com.clearaller.app</string>
+</resources>
