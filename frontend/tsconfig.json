@@ -15,6 +15,10 @@
     "isolatedModules": true,
     "noEmit": true,
     "composite": true,
+    "baseUrl": ".",
+    "paths": {
+      "@clearaller/shared": ["../shared/src/index.ts"]
+    },
     "jsx": "react-jsx"
   },
   "include": ["src"],

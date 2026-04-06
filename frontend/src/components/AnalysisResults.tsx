@@ -1,5 +1,5 @@
 import { AlertTriangle, CheckCircle2, ShieldAlert } from "lucide-react";
-import type { SafetyPrediction } from "@clearaller/shared";
+import type { SafetyPrediction, RiskHit, MlSignal } from "@clearaller/shared";
 
 type ConfidenceBand = "Low Evidence" | "Moderate Evidence" | "Strong Evidence";
 
@@ -13,7 +13,7 @@ type SafetyPredictionView = SafetyPrediction & {
   }>;
 };
 
-type RiskHitView = SafetyPredictionView["matchedAllergens"][number] & {
+type RiskHitView = RiskHit & {
   detectedBy?: "rules" | "ml" | "hybrid";
 };
 
@@ -70,8 +70,8 @@ export function AnalysisResults({ predictions, loading }: { predictions: SafetyP
 
   return (
     <div className="mt-5 grid gap-4">
-      {(predictions as SafetyPredictionView[]).map((prediction) => {
-        const style = ratingStyles[prediction.rating];
+      {(predictions as SafetyPredictionView[]).map((prediction: SafetyPredictionView) => {
+        const style = ratingStyles[prediction.rating as keyof typeof ratingStyles];
         return (
           <article key={prediction.profileId} className="spotlight-card rounded-[30px] border border-ink/8 p-5 shadow-sm shadow-ink/5">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -118,7 +118,7 @@ export function AnalysisResults({ predictions, loading }: { predictions: SafetyP
                   </div>
                 ) : null}
                 {prediction.matchedAllergens.length ? (
-                  prediction.matchedAllergens.map((rawHit) => {
+                  prediction.matchedAllergens.map((rawHit: RiskHit) => {
                     const hit = rawHit as RiskHitView;
                     return (
                       <div key={`${prediction.profileId}-${hit.ingredient}`} className="rounded-[22px] bg-white/90 p-4 panel-outline">
@@ -146,7 +146,7 @@ export function AnalysisResults({ predictions, loading }: { predictions: SafetyP
                   <div className="rounded-[22px] border border-ink/10 bg-white/80 p-4 text-sm text-ink/65 panel-outline">
                     <p className="font-medium text-ink">Classifier signals</p>
                     <div className="mt-3 flex flex-wrap gap-2">
-                      {prediction.mlSignals.map((signal) => (
+                      {prediction.mlSignals.map((signal: MlSignal) => (
                         <span key={`${prediction.profileId}-${signal.ingredient}`} className="rounded-full bg-sand px-3 py-2 text-xs text-ink/70">
                           {signal.ingredient}: {signal.categories.join(", ")} ({Math.round(signal.confidence * 100)}%)
                         </span>
